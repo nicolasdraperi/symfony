@@ -20,6 +20,7 @@
         <th>ID</th>
         <th>Identifiant</th>
         <th>Mot de passe</th>
+        <th>Delete</th>
     </tr>
 
     {% for user in users %}
@@ -28,6 +29,11 @@
         <td>{{ user.id }}</td>
         <td>{{ user.identifiant }}</td>
         <td>{{ user.password }}</td>
+        <td>
+        <form action="http://127.0.0.1:8000/user/delete/{{user.id}}" method="post">
+            <input type="submit" value="Supprimer">
+        </form>
+        </td>
     </tr>
     {% endfor %}
 </table>

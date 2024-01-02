@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Product;
 
 class UserController extends AbstractController
 {
@@ -41,7 +42,7 @@ class UserController extends AbstractController
     public function delete(EntityManagerInterface $entityManager, User $user){
         $entityManager->remove($user);
         $entityManager->flush();
-        return new Response("User {{id}} supprimé");
+        return new Response("User supprimé");
 
     }
     #[Route('/user/show_all', name:"app_player_all")]
@@ -55,25 +56,29 @@ class UserController extends AbstractController
     public function formumaire(EntityManagerInterface $entityManager){
         return $this->render('user/formulaire.html.twig');
     }
+
+
+    #[Route('/update/{id}', name:"update")]
     public function update(EntityManagerInterface $entityManager, int $id): Response
     {
-        $product = $entityManager->getRepository(Product::class)->find($id);
+        $user = $entityManager->getRepository(User::class)->find($id);
 
-        if (!$product) {
+        if (!$user) {
             throw $this->createNotFoundException(
-                'No product found for id '.$id
+                'No user found for id '.$id
             );
         }
 
-        $user->setIdentifiant('New product name!');
-        $user->setPassword('New product name!');
-        $user->setDescription('New product name!');
-        $user->setAge('New product name!');
+        $user->setIdentifiant('New user name!');
+        $user->setPassword('New user name!');
+        $user->setDescription('New user name!');
+        $user->setAge('New user name!');
         $entityManager->flush();
 
         return $this->redirectToRoute('app_user_show', [
-            'id' => $product->getId()
+            'id' => $user->getId()
         ]);
         
 
+    }
 }
