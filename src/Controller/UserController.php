@@ -38,7 +38,7 @@ class UserController extends AbstractController
 
         return $this->render('user/index.html.twig',["user" => $User,]);
     }
-    #[Route('/user/delete/{id}', name:"app_player_delete")]
+    #[Route('/user/delete/{id}', name:"app_user_delete")]
     public function delete(EntityManagerInterface $entityManager, User $user){
         $entityManager->remove($user);
         $entityManager->flush();
