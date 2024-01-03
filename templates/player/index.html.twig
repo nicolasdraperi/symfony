@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .player-info {
+            width: 400px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .player-detail {
+            margin-bottom: 10px;
+        }
+
+        .player-label {
+            color: #666;
+            margin-bottom: 6px;
+        }
+        .action-box {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            margin-bottom: 10px;
+        }
+
+        .action-icon {
+            height: 30px;
+            background-color: #5cb85c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="player-info">
+        <h2>Player Information</h2>
+        <div class="player-detail">
+            <span class="player-label">Nom:</span>
+            <span>{{ player.nom }}</span>
+        </div>
+        <div class="player-detail">
+            <span class="player-label">Points de Vie:</span>
+            <span>{{ player.pv }}</span>
+        </div>
+        <div class="player-detail">
+            <span class="player-label">Mana:</span>
+            <span>{{ player.mana }}</span>
+        </div>
+        <div class="player-detail">
+            <span class="player-label">Points d'Action:</span>
+            <span>{{ player.ap }}</span>
+        </div>
+        <div class="player-detail">
+            <span class="player-label">Points de Dommage:</span>
+            <span>{{ player.ad }}</span>
+        </div>
+        <div class="action-box" >
+            <a class="action-icon" style="color: black" href="http://127.0.0.1:8000/player/show_all">Retour arriere</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+
