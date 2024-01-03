@@ -76,24 +76,23 @@
         }
     </style>
 </head>
-
-<body>
-    <form action="http://127.0.0.1:8000/user/create" method="post">
+{% block body %}
+    <form action="http://127.0.0.1:8000/update/{{user.id}}" method="post">
         <label for="identifiant">Identifiant :</label>
-        <input type="text" id="identifiant" name="identifiant"><br><br>
+        <input type="text" id="identifiant" name="identifiant" value="{{ user.identifiant }}"><br><br>
 
-        <label for="mot_de_passe">Mot de passe :</label>
-        <input type="password" id="password" name="password"><br><br>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" value="{{ user.password }}"><br><br>
 
         <label for="description">Description :</label><br>
-        <textarea id="description" name="description" rows="4" cols="50"></textarea><br><br>
+        <textarea id="description" name="description" rows="4" cols="50">{{ user.description }}</textarea><br><br>
 
         <label for="age">Âge :</label>
-        <input type="number" id="age" name="age"><br><br>
+        <input type="number" id="age" name="age" value="{{ user.age }}"><br><br>
 
-        <input type="submit" value="Envoyer">
+        <input type="submit" value="Modifier">
     </form>
-</body>
+{% endblock %}
 </html>
 
 

@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Product;
 
 class UserController extends AbstractController
 {
@@ -34,7 +33,8 @@ class UserController extends AbstractController
         //return $this->render('user/formulaire.html.twig');
     }
     #[Route('/user/show/{id}', name: 'app_user_show')]
-    public function show(User $User){
+    public function show(User $User): Response
+    {
 
         return $this->render('user/index.html.twig',["user" => $User,]);
     }
@@ -45,40 +45,48 @@ class UserController extends AbstractController
         return new Response("User supprimé");
 
     }
-    #[Route('/user/show_all', name:"app_player_all")]
+
+
+    #[Route('/user/show_all', name:"app_user_all")]
     public function ShowAll(EntityManagerInterface $entityManager){
         $users = $entityManager->getRepository(User::class)->findAll();
         return $this->render('user/show.html.twig', ["users" => $users]);
-        
-
     }
-    #[Route('/formulaire', name:"formulaire")]
-    public function formumaire(EntityManagerInterface $entityManager){
+    #[Route('formulaire', name:"formulaire")]
+    public function formulaire(EntityManagerInterface $entityManager){
         return $this->render('user/formulaire.html.twig');
+    }
+    #[Route('formulaire_update/{id}', name: "formulaire_update")]
+    public function formulaire_update(int $id, EntityManagerInterface $entityManager): Response{
+        $user = $entityManager->getRepository(User::class)->find($id);
+        return $this->render('user/formulaire_update.html.twig', [
+            'user' => $user,
+        ]);
     }
 
 
     #[Route('/update/{id}', name:"update")]
-    public function update(EntityManagerInterface $entityManager, int $id): Response
+    public function update(EntityManagerInterface $entityManager, int $id, Request $request): Response
     {
         $user = $entityManager->getRepository(User::class)->find($id);
-
+        $identifiant = $request->request->get("identifiant");
+        $password = $request->request->get("password");
+        $description = $request->request->get("description");
+        $age = $request->request->get("age");
         if (!$user) {
             throw $this->createNotFoundException(
                 'No user found for id '.$id
             );
         }
-
-        $user->setIdentifiant('New user name!');
-        $user->setPassword('New user name!');
-        $user->setDescription('New user name!');
-        $user->setAge('New user name!');
+        $user->setIdentifiant($identifiant);
+        $user->setPassword($password);
+        $user->setDescription($description);
+        $user->setAge($age);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_user_show', [
-            'id' => $user->getId()
-        ]);
-        
+        $users = $entityManager->getRepository(User::class)->findAll();
+        return $this->render('user/show.html.twig', ["users" => $users]);
+
 
     }
 }

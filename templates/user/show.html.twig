@@ -21,6 +21,7 @@
         <th>Identifiant</th>
         <th>Mot de passe</th>
         <th>Delete</th>
+        <th>Modifier</th>
     </tr>
 
     {% for user in users %}
@@ -33,6 +34,11 @@
         <form action="http://127.0.0.1:8000/user/delete/{{user.id}}" method="post">
             <input type="submit" value="Supprimer">
         </form>
+        </td>
+        <td>
+            <form action="http://127.0.0.1:8000/formulaire_update/{{user.id}}" method="get">
+                <input type="submit" value="Modifier">
+            </form>
         </td>
     </tr>
     {% endfor %}
