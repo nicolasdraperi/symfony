@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Player;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,8 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class PlayerController extends AbstractController
 {
     #[Route('/player/create', name: 'app_player_create')]
-    public function save(EntityManagerInterface $entityManager, Request $request): Response
+    public function save(EntityManagerInterface $entityManager, Request $request, Security $security): Response
     {
+
         $nom = $request->request->get("nom");
         $pv = $request->request->get("pv");
         $mana = $request->request->get("mana");
@@ -23,6 +25,7 @@ class PlayerController extends AbstractController
         $ad = $request->request->get("ad");
         $status = $request->request->get("status");
         $players = $entityManager->getRepository(Player::class)->findAll();
+        $user = $security->getUser();
         $player = new Player();
         $player
             ->setNom($nom)
@@ -30,11 +33,11 @@ class PlayerController extends AbstractController
             ->setMana($mana)
             ->setAp($ap)
             ->setAd($ad)
-            ->setStatus($status);
+            ->setStatus($status)
+            ->setOwner($user);
 
         $entityManager->persist($player);
         $entityManager->flush();
-
         return $this->render('player/index.html.twig', ["player" => $player, "players" => $players]);
     }
 
@@ -54,8 +57,10 @@ class PlayerController extends AbstractController
     }
 
     #[Route('/player/show_all', name: "app_player_all")]
-    public function showAll(EntityManagerInterface $entityManager): Response
+    public function showAll(EntityManagerInterface $entityManager, Security $security, ): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $players = $entityManager->getRepository(Player::class)->findAll();
         return $this->render('player/show.html.twig', ["players" => $players]);
     }
@@ -63,12 +68,14 @@ class PlayerController extends AbstractController
     #[Route('/player/formulaire', name: "player_formulaire")]
     public function formulaire(): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         return $this->render('player/formulaire.html.twig');
     }
 
     #[Route('/player/formulaire_update/{id}', name: "player_formulaire_update")]
     public function formulaire_update(int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $player = $entityManager->getRepository(Player::class)->find($id);
         return $this->render('player/formulaire_update.html.twig', [
             'player' => $player,
@@ -76,8 +83,9 @@ class PlayerController extends AbstractController
     }
 
     #[Route('/player/update/{id}', name: "player_update")]
-    public function update(EntityManagerInterface $entityManager, int $id, Request $request): Response
+    public function update(EntityManagerInterface $entityManager, int $id, Request $request, $security): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $player = $entityManager->getRepository(Player::class)->find($id);
         $nom = $request->request->get("nom");
         $pv = $request->request->get("pv");
@@ -100,6 +108,11 @@ class PlayerController extends AbstractController
             ->setAd($ad)
             ->setStatus($status);
 
+
+
+
+
+
         $entityManager->flush();
 
         $players = $entityManager->getRepository(Player::class)->findAll();
@@ -109,6 +122,7 @@ class PlayerController extends AbstractController
     #[Route('/player/attack/{id}', name: 'app_player_attack')]
         public function attack(EntityManagerInterface $entityManager, Request $request, int $id): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $selectedPlayerId = $request->request->get("selected_player");
         $selectedAttackType = $request->request->get("selected_attack_type");
 
@@ -140,9 +154,10 @@ class PlayerController extends AbstractController
         }
         return $this->redirectToRoute('app_player_all');
     }
-    #[Route('/player/create/form', name: 'app_player_create')]
+    #[Route('/player/create/form', name: 'app_player_create_form    ')]
     public function creation_form(Request $request,EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
         $player = new Player();
         $form = $this->createFormBuilder($player)
@@ -153,6 +168,7 @@ class PlayerController extends AbstractController
             ->add('ad')
             ->add('status')
             ->add('save', SubmitType::class, ['label' => 'Create Player'])
+
             ->getForm();
 
         $form->handleRequest($request);
@@ -178,6 +194,7 @@ class PlayerController extends AbstractController
     #[Route('/player/update_form/{id}', name: "player_update_form")]
     public function updateform(EntityManagerInterface $entityManager, int $id, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $player = $entityManager->getRepository(Player::class)->find($id);
 
         if (!$player) {
