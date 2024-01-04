@@ -54,6 +54,43 @@
             text-decoration: none;
             padding: 5px;
         }
+        select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 200px;
+        }
+        select option {
+            background-color: #fff;
+            color: #000;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: center;
+
+
+        }
+        h3{
+            text-align: center;
+        }
+        .button-attack {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #c93333;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+
+
+
 
     </style>
 {% endblock %}
@@ -74,16 +111,34 @@
             <span>{{ player.mana }}</span>
         </div>
         <div class="player-detail">
-            <span class="player-label">Points d'Action:</span>
+            <span class="player-label">Attaque Physique:</span>
             <span>{{ player.ap }}</span>
         </div>
         <div class="player-detail">
-            <span class="player-label">Points de Dommage:</span>
+            <span class="player-label">Attaque Magique</span>
             <span>{{ player.ad }}</span>
         </div>
         <div class="action-box" >
             <a class="action-icon" style="color: black" href="http://127.0.0.1:8000/player/show_all">Retour arriere</a>
         </div>
+        <h3>Qui attaquer ?</h3>
+        <form action="http://127.0.0.1:8000/player/attack/{{ player.id }}" method="post">
+            <label>
+                <select name="selected_player">
+                    {% for player in players %}
+                        <option value="{{ player.id }}">{{ player.nom }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <select name="selected_attack_type">
+                    <option value="Attaque Physique">Attaque Physique</option>
+                    <option value="Attaque Magique">Attaque Magique</option>
+                </select>
+            </label>
+            <button type="submit" class="button-attack">Attaquer</button>
+        </form>
+
     </div>
 {% endblock %}
 

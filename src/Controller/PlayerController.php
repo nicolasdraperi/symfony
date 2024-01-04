@@ -20,25 +20,28 @@ class PlayerController extends AbstractController
         $mana = $request->request->get("mana");
         $ap = $request->request->get("ap");
         $ad = $request->request->get("ad");
-
+        $status = $request->request->get("status");
+        $players = $entityManager->getRepository(Player::class)->findAll();
         $player = new Player();
         $player
             ->setNom($nom)
             ->setPv($pv)
             ->setMana($mana)
             ->setAp($ap)
-            ->setAd($ad);
+            ->setAd($ad)
+            ->setStatus($status);
 
         $entityManager->persist($player);
         $entityManager->flush();
 
-        return $this->render('player/index.html.twig', ["player" => $player]);
+        return $this->render('player/index.html.twig', ["player" => $player, "players" => $players]);
     }
 
     #[Route('/player/show/{id}', name: 'app_player_show')]
-    public function show(Player $player): Response
+    public function show(Player $player, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('player/index.html.twig', ["player" => $player]);
+        $players = $entityManager->getRepository(Player::class)->findAll();
+        return $this->render('player/index.html.twig', ["player" => $player, "players" => $players,]);
     }
 
     #[Route('/player/delete/{id}', name:"app_player_delete")]
@@ -80,6 +83,7 @@ class PlayerController extends AbstractController
         $mana = $request->request->get("mana");
         $ap = $request->request->get("ap");
         $ad = $request->request->get("ad");
+        $status = $request->request->get("status");
 
         if (!$player) {
             throw $this->createNotFoundException(
@@ -92,12 +96,48 @@ class PlayerController extends AbstractController
             ->setPv($pv)
             ->setMana($mana)
             ->setAp($ap)
-            ->setAd($ad);
+            ->setAd($ad)
+            ->setStatus($status);
 
         $entityManager->flush();
 
         $players = $entityManager->getRepository(Player::class)->findAll();
         return $this->render('player/show.html.twig', ["players" => $players]);
+    }
+
+    #[Route('/player/attack/{id}', name: 'app_player_attack')]
+        public function attack(EntityManagerInterface $entityManager, Request $request, int $id): Response
+    {
+        $selectedPlayerId = $request->request->get("selected_player");
+        $selectedAttackType = $request->request->get("selected_attack_type");
+
+        $player = $entityManager->getRepository(Player::class)->find($id);
+        $Physical_attack = $player -> getAp();
+        $Magical_attack = $player -> getAd();
+        $targetPlayer = $entityManager->getRepository(Player::class)->find($selectedPlayerId);
+
+
+
+        if ($selectedAttackType === "Attaque Physique") {
+            $targetPlayer->setPv($targetPlayer->getPv() - $Physical_attack);
+        } elseif ($selectedAttackType === "Attaque Magique") {
+            if ($targetPlayer->getMana()<=0){
+                return $this->redirectToRoute('app_player_all');
+            }else{
+                $targetPlayer->setPv($targetPlayer->getPv() - $Magical_attack);
+                $targetPlayer->setMana($targetPlayer->getMana() - 10);
+            }
+
+        }
+
+        $entityManager->flush();
+
+        if ($targetPlayer->getPv() <= 0){
+            $targetPlayer->setStatus("Dead");
+            $targetPlayer->setPv(0);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('app_player_all');
     }
 }
 

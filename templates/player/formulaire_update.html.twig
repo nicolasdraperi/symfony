@@ -88,11 +88,13 @@
         <label for="mana">Mana :</label>
         <input type="number" id="mana" name="mana" value="{{ player.mana }}"><br><br>
 
-        <label for="ap">Points d'Action :</label>
+        <label for="ap">Attaque Physique :</label>
         <input type="number" id="ap" name="ap" value="{{ player.ap }}"><br><br>
 
-        <label for="ad">Points de Dommage :</label>
+        <label for="ad">Attaque Magique :</label>
         <input type="number" id="ad" name="ad" value="{{ player.ad }}"><br><br>
+
+        <input type="hidden" id="status" name="status" value="Alive" style="overflow: hidden"><br><br>
 
         <input type="submit" value="Modifier">
     </form>

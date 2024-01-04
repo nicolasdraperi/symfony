@@ -28,6 +28,9 @@ class Player
     #[ORM\Column]
     private ?int $ad = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +92,18 @@ class Player
     public function setAd(int $ad): static
     {
         $this->ad = $ad;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

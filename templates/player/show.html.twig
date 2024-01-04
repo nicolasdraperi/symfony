@@ -75,8 +75,9 @@
         <th>Nom</th>
         <th>Points de Vie</th>
         <th>Mana</th>
-        <th>Points d'Action</th>
-        <th>Points de Dommage</th>
+        <th>Attaque Physique</th>
+        <th>Attaque Magique</th>
+        <th>Status</th>
         <th>Delete</th>
         <th>Modifier</th>
         <th>Plus d'info</th>
@@ -89,7 +90,9 @@
             <td>{{ player.pv }}</td>
             <td>{{ player.mana }}</td>
             <td>{{ player.ap }}</td>
-            <td>{{ player.ad }}</td><td>
+            <td>{{ player.ad }}</td>
+            <td>{{ player.status }}</td>
+            <td>
                 <form action="http://127.0.0.1:8000/player/delete/{{ player.id }}" method="post">
                     <input type="submit" value="Supprimer">
                 </form>
