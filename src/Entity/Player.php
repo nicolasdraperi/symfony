@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\PlayerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,8 +14,16 @@ class Player
     #[ORM\Column]
     private ?int $id = null;
 
+
+
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    #[Assert\Length(
+        min: 2,
+        max: 8,
+        minMessage: 'Your first name must be at least {{ limit }} characters long',
+        maxMessage: 'Your first name cannot be longer than {{ limit }} characters',
+    )]
+    protected ?string $nom;
 
     #[ORM\Column]
     private ?int $mana = null;

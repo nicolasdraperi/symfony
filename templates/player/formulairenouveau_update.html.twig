@@ -1,0 +1,26 @@
+{# templates/player/message.html.twig #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message</title>
+</head>
+<body>
+
+{{ form_start(form) }}
+
+{{ form_row(form.nom) }}
+{{ form_row(form.pv) }}
+{{ form_row(form.mana) }}
+{{ form_row(form.ad) }}
+{{ form_row(form.ap) }}
+{{ form_row(form.status) }}
+
+{{ form_row(form.save) }}
+
+{{ form_end(form) }}
+
+</body>
+</html>

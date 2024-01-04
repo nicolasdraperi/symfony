@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Player;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -138,6 +139,75 @@ class PlayerController extends AbstractController
             $entityManager->flush();
         }
         return $this->redirectToRoute('app_player_all');
+    }
+    #[Route('/player/create/form', name: 'app_player_create')]
+    public function creation_form(Request $request,EntityManagerInterface $entityManager): Response
+    {
+
+        $player = new Player();
+        $form = $this->createFormBuilder($player)
+            ->add('nom')
+            ->add('pv')
+            ->add('mana')
+            ->add('ap')
+            ->add('ad')
+            ->add('status')
+            ->add('save', SubmitType::class, ['label' => 'Create Player'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $player=$form->getData();
+            $entityManager->persist($player);
+            $entityManager->flush();
+
+            $players = $entityManager->getRepository(Player::class)->findAll();
+            return $this->render('player/index.html.twig', ["player" => $player, "players" => $players]);
+
+        }
+        $players = $entityManager->getRepository(Player::class)->findAll();
+        return $this->render('player/formulairenouveau.html.twig', [
+            'form' => $form->createView(),
+            "player" => $player,
+            "players" => $players
+        ]);
+    }
+    #[Route('/player/update_form/{id}', name: "player_update_form")]
+    public function updateform(EntityManagerInterface $entityManager, int $id, Request $request): Response
+    {
+        $player = $entityManager->getRepository(Player::class)->find($id);
+
+        if (!$player) {
+            throw $this->createNotFoundException(
+                'No player found for id '.$id
+            );
+        }
+
+        $form = $this->createFormBuilder($player)
+            ->add('nom')
+            ->add('pv')
+            ->add('mana')
+            ->add('ap')
+            ->add('ad')
+            ->add('status')
+            ->add('save', SubmitType::class, ['label' => 'Update Player'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $players = $entityManager->getRepository(Player::class)->findAll();
+            return $this->render('player/show.html.twig', ["players" => $players]);
+        }
+
+        return $this->render('player/formulairenouveau_update.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
 
